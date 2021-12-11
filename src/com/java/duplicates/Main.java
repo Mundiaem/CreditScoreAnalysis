@@ -116,7 +116,9 @@ public class Main {
             }
 
         }
-        System.out.println(output+"]");
+        String joinedString = String.join(",", output);
+        String.join("''", customers);
+        System.out.println(joinedString+"]");
 
         return customers;
 
