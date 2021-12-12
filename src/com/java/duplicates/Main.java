@@ -12,7 +12,9 @@ public class Main {
     /*
      * 1. Read data from csv file
      * 2. sort the data according to dates
-     * 3. get most transaction per customer*/
+     * 3. get most transaction per customer
+     * 4. sort in natural order for customer ids
+     * 5. sort in reverse order for values*/
     public static void main(String[] args) {
         // write your code here
         String transaction_csv_file_path = "src/interview_code_test/test_data/transaction_data_1.csv";
@@ -47,14 +49,13 @@ public class Main {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    transactionsList.add(new Transactions(transactions[0], transactions[1], transaction_date));
+                    transactionsList.add(new Transactions(transactions[0], transaction_date));
 
                 }
                 count++;
 
 
             }
-//            System.out.printf("%s", transactionsList);
 
             scv_reader.close();
 
@@ -63,6 +64,23 @@ public class Main {
             e.printStackTrace();
         }
         List<String> customers = mostTransactionPerCustomer(sortTransactionDates(transactionsList), n);
+
+        StringBuffer output = new StringBuffer(110);
+        output.append("[ ");
+        int _count = 0;
+        Iterator<String> stringIterator = customers.stream().limit(n).iterator();
+        while (stringIterator.hasNext()) {
+            if (_count == 0) {
+                output.append(String.format("'%s' ", stringIterator.next()));
+            } else {
+                _count++;
+                output.append(String.format("'%s' ", stringIterator.next()));
+            }
+
+        }
+        String joinedString = String.join(",", output);
+        String.join("''", customers);
+        System.out.println(joinedString + "]");
 
     }
 
@@ -74,51 +92,50 @@ public class Main {
     }
 
     private static List<String> mostTransactionPerCustomer(List<Transactions> transactions, int n) {
-        List<String> customers = new ArrayList<>();
+        List<String>
+                customers = new ArrayList<>();
 
         Map<String, Integer> storeCustomerTransactionCount = new HashMap<>();
-
-        Transactions currentCustomer = null;
+        List<Transactions> myCustomers = new ArrayList<>();
 
 
         int transSize = transactions.size();
         for (int i = 0; i < transSize - 1; i++) {
 
-            if (transactions.get(i).getTransaction_date().equals(transactions.get(i + 1).getTransaction_date())) {
-                if (!storeCustomerTransactionCount.containsKey(transactions.get(i).getCustomer_id())) {
-                    storeCustomerTransactionCount.put(transactions.get(i).getCustomer_id(), 1);
-                } else {
-                    int value = storeCustomerTransactionCount.get(transactions.get(i).getCustomer_id());
-                    value++;
-                    storeCustomerTransactionCount.put(transactions.get(i).getCustomer_id(), value);
 
-                }                //do stuff
+            if (transactions.get(i).getCustomer_id().equalsIgnoreCase(transactions.get(i + 1).getCustomer_id())) {
+                myCustomers.add(transactions.get(i));
+
             }
         }
+
+        int cssz = myCustomers.size();
+        for (int k = 0; k < cssz - 1; k++) {
+            if (myCustomers.get(k).getCustomer_id().equalsIgnoreCase(myCustomers.get(k + 1).getCustomer_id())) {
+                if (!storeCustomerTransactionCount.containsKey(transactions.get(k).getCustomer_id())) {
+                    storeCustomerTransactionCount.put(transactions.get(k).getCustomer_id(), 1);
+                } else {
+                    int value = storeCustomerTransactionCount.get(transactions.get(k).getCustomer_id());
+                    value++;
+                    storeCustomerTransactionCount.put(transactions.get(k).getCustomer_id(), value);
+
+                }
+            }
+
+        }
+//        System.out.println(storeCustomerTransactionCount.toString());
 
 
         LinkedHashMap<String, Integer> sortedCustomers = new LinkedHashMap<>();
-        storeCustomerTransactionCount.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        storeCustomerTransactionCount.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> sortedCustomers.put(x.getKey(), x.getValue()));
+//        System.out.println(sortedCustomers.toString());
+
+
         for (Map.Entry<String, Integer> mapCustomers : sortedCustomers.entrySet()) {
             customers.add(mapCustomers.getKey());
-
         }
-        StringBuffer output = new StringBuffer(110);
-        output.append("[ ");
-        int count=0;
-        Iterator<String> stringIterator= customers.stream().limit(n).iterator();
-        while (stringIterator.hasNext()){
-            if (count==0){
-                output.append(String.format("'%s' ", stringIterator.next()));
-            }else{
-                output.append(String.format("'%s' ", stringIterator.next()));
-            }
 
-        }
-        String joinedString = String.join(",", output);
-        String.join("''", customers);
-        System.out.println(joinedString+"]");
 
         return customers;
 

@@ -11,12 +11,10 @@ import java.util.Date;
 
 public class Transactions {
     private String customer_id;
-    private String transaction_amount;
     private Date transaction_date;
 
-    public Transactions(String customer_id, String transaction_amount, Date transaction_date) {
+    public Transactions(String customer_id, Date transaction_date) {
         this.customer_id = customer_id;
-        this.transaction_amount = transaction_amount;
         this.transaction_date = transaction_date;
     }
 
@@ -28,13 +26,7 @@ public class Transactions {
         this.customer_id = customer_id;
     }
 
-    public String getTransaction_amount() {
-        return transaction_amount;
-    }
 
-    public void setTransaction_amount(String transaction_amount) {
-        this.transaction_amount = transaction_amount;
-    }
 
     public Date getTransaction_date() {
         return transaction_date;
@@ -46,10 +38,15 @@ public class Transactions {
 
     @Override
     public String toString() {
-        return "Transactions{" +
+        return "\nTransactions{" +
                 "customer_id='" + customer_id + '\'' +
-                ", transaction_amount='" + transaction_amount + '\'' +
-                ",\n transaction_date='" + transaction_date + '\'' +
+
+                ", transaction_date='" + transaction_date + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
