@@ -3,3 +3,4 @@
 2. Open JAVA IDE preferably Intellij 
 3. Click File> New > Project from existing sources to import 
 4. Run on Main Application from run button
+5. Implementation using > ( https://github.com/Mundiaem/CreditAnalysisLinkedList.git) 
